@@ -1,22 +1,23 @@
-'use client';
+"use client";
 
-import { useState, FormEvent } from 'react';
-import { SubjectInputFormProps } from '@/types';
+import { useState, FormEvent } from "react";
+import {  SubjectInputFormProps } from "@/types";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
   CardDescription,
-} from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 
 const SubjectInputForm: React.FC<SubjectInputFormProps> = ({
   initialSubject,
   onSubmit,
   onBack,
+  category,
 }) => {
   const [subject, setSubject] = useState<string>(initialSubject);
 
@@ -37,14 +38,18 @@ const SubjectInputForm: React.FC<SubjectInputFormProps> = ({
           <CardDescription className="text-slate-600 text-base">
             Think of this like your prompt’s elevator pitch.
             <br />
-            For example: <em>"a futuristic city"</em>, <em>"a lonely lighthouse"</em>, or <em>"the concept of time"</em>.
+            For example: <em>"a futuristic city"</em>,{" "}
+            <em>"a lonely lighthouse"</em>, or <em>"the concept of time"</em>.
           </CardDescription>
         </CardHeader>
 
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="subject" className="text-sm font-medium text-slate-700">
+              <Label
+                htmlFor="subject"
+                className="text-sm font-medium text-slate-700"
+              >
                 Subject / Theme
               </Label>
               <Input

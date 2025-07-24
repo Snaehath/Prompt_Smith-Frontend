@@ -5,8 +5,10 @@ export enum PromptCategory {
 
 export interface SubjectInputFormProps {
   initialSubject: string;
+  category:PromptCategory;
   onSubmit: (subject: string) => void;
   onBack: () => void;
+
 }
 export interface SuggestionSelectorProps {
   suggestions: string[][];
@@ -17,7 +19,8 @@ export interface SuggestionSelectorProps {
 
 export interface PromptResultProps {
   prompt: string;
-  image:string
+  result:string;
+  category:PromptCategory;
   onRegenerate: () => void;
   onStartOver: () => void;
   onBack: () => void;

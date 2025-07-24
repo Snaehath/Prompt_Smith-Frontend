@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CategorySelector from "./categorySelector";
 import SubjectInputForm from "./subjectInput";
 import SuggestionSelector from "./suggestionSelector";
@@ -14,23 +14,26 @@ export default function PromptBuilder() {
   const [subject, setSubject] = useState("");
   const [suggestions, setSuggestions] = useState<string[][]>([]);
   const [selectedPrompt, setSelectedPrompt] = useState("");
-  const [generatedImage, setGeneratedImage] = useState("");
+  const [generatedOutput, setGeneratedOutput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [loadingText, setLoadingText] = useState("Loading...");
 
   const handleCategorySelect = (cat: PromptCategory) => {
     setCategory(cat);
-    setStep("form");
   };
+  useEffect(() => {
+    if (category) {
+      setStep("form");
+    }
+  }, [category]);
 
   const handleBack = () => {
     setStep("suggestion");
-    setGeneratedImage("");
+    setGeneratedOutput("");
   };
 
   const handleSubjectSubmit = async (subj: string) => {
     setSubject(subj);
-
     try {
       setIsLoading(true);
       setLoadingText("Generating suggestions...");
@@ -39,7 +42,7 @@ export default function PromptBuilder() {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ subject: subj }),
+          body: JSON.stringify({ subject: subj, category: category }),
         }
       );
 
@@ -59,7 +62,7 @@ export default function PromptBuilder() {
 
   const handleSuggestionSelect = async (suggestion: string[]) => {
     try {
-        setIsLoading(true);
+      setIsLoading(true);
       setLoadingText("Generating Prompt...");
       const res = await fetch("http://localhost:5000/api/generate-prompt", {
         method: "POST",
@@ -67,6 +70,7 @@ export default function PromptBuilder() {
         body: JSON.stringify({
           subject,
           keywords: suggestion.join(", "),
+          category,
         }),
       });
 
@@ -81,8 +85,14 @@ export default function PromptBuilder() {
       }
 
       setSelectedPrompt(data.prompt); // Final AI-ready prompt
-      setLoadingText('Injecting prompt to image generator...');
-      handleImageGeneration(data.prompt); // Generate image using final prompt
+      if (category === "Image Generation") {
+        setLoadingText("Injecting prompt to image generator...");
+        handleImageGeneration(data.prompt);
+      } else {
+        setLoadingText("Injecting prompt to text generator...");
+        handleTextGeneration(data.prompt);
+      }
+
       setStep("result");
     } catch (err) {
       console.error("Network error:", err);
@@ -105,11 +115,33 @@ export default function PromptBuilder() {
 
       const blob = await res.blob();
       const imageUrl = URL.createObjectURL(blob);
-      setGeneratedImage(imageUrl);
-      setLoadingText('Image generated!');
+      setGeneratedOutput(imageUrl);
+      setLoadingText("Image generated!");
       setIsLoading(false);
     } catch (err) {
       console.error("Network error:", err);
+    }
+  };
+
+  const handleTextGeneration = async (selectedPrompt: string) => {
+    try {
+      const res = await fetch("http://localhost:5000/api/generate-text", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: selectedPrompt}),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        console.error("Server error:", data.error || "Unknown error");
+        return;
+      }
+
+      setGeneratedOutput(data.text);
+      setLoadingText("Text generated!");
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Network error:", error);
     }
   };
 
@@ -119,7 +151,7 @@ export default function PromptBuilder() {
     setSubject("");
     setSuggestions([]);
     setSelectedPrompt("");
-    setGeneratedImage("");
+    setGeneratedOutput("");
   };
 
   return (
@@ -134,6 +166,7 @@ export default function PromptBuilder() {
           initialSubject=""
           onBack={() => setStep("category")}
           onSubmit={handleSubjectSubmit}
+          category={category}
         />
       )}
 
@@ -146,10 +179,11 @@ export default function PromptBuilder() {
         />
       )}
 
-      {step === "result" && (
+      {step === "result" && category && (
         <PromptResult
           prompt={selectedPrompt}
-          image={generatedImage}
+          result={generatedOutput}
+          category={category}
           onRegenerate={() => setStep("suggestion")}
           onBack={handleBack}
           onStartOver={restartFlow}
