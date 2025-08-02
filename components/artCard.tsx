@@ -34,7 +34,7 @@ const ArtCard: React.FC<ArtworkProps> = ({ artwork, handleImageGeneration }) => 
 
   if (!artwork) {
     return (
-      <Card className="w-[600px] h-[720px] flex items-center justify-center">
+      <Card className="w-[600px] h-[500px] flex items-center justify-center">
         <CardContent>
           <p className="text-gray-400 text-sm animate-pulse">
             Loading prompt...
@@ -45,7 +45,7 @@ const ArtCard: React.FC<ArtworkProps> = ({ artwork, handleImageGeneration }) => 
   }
 
   return (
-    <Card className="w-[600px] h-[720px] flex flex-col overflow-hidden transition-shadow hover:shadow-gray-600/20 border-gray-500/30 border-4">
+    <Card className="w-[600px] h-[500px] flex flex-col overflow-hidden transition-shadow hover:shadow-gray-600/20 border-gray-500/30 border-4">
       <div className="flex-1 bg-black relative flex items-center justify-center p-3 h-[300px]">
         {isLoading && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-900/80 z-10">
@@ -58,7 +58,7 @@ const ArtCard: React.FC<ArtworkProps> = ({ artwork, handleImageGeneration }) => 
           <img
             src={artwork.imageUrl}
             alt={artwork.title}
-            className="w-full h-full object-contain transition-opacity duration-300"
+            className="w-full object-contain transition-opacity duration-300"
           />
         ) : !isLoading ? (
           <p className="text-sm font-mono text-gray-400 text-center leading-relaxed select-none">

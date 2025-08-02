@@ -101,21 +101,45 @@ export default function PromptBuilder({ step }: promptBuilderProps) {
       setIsLoading(false);
     }
   };
+  const bgImage = [...prompts].reverse().find((p) => p.imageUrl)?.imageUrl;
 
   return (
-    <div className="h-screen flex items-center justify-center">
+    <>
       <Loader loading={isLoading} text={loadingText} />
 
       {step === "museum" && (
-        <MuseumShow
-          artPrompts={prompts}
-          handleImageGeneration={handleImageGeneration}
-        />
+        <div
+          className="h-screen flex items-center justify-center"
+          style={{
+            backgroundImage: bgImage ? `url(${bgImage})` : undefined,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        >
+          <MuseumShow
+            artPrompts={prompts}
+            handleImageGeneration={handleImageGeneration}
+          />
+        </div>
       )}
-      {step === "poem" && <PoeticShow />}
-      {step === "learning" && <PromptStudio />}
 
-      {step === "contribution" && <Contribution />}
-    </div>
+      {step === "poem" && (
+        <div className="h-screen overflow-y-auto">
+          <PoeticShow />
+        </div>
+      )}
+
+      {step === "learning" && (
+        <div className="min-h-screen overflow-y-auto">
+          <PromptStudio />
+        </div>
+      )}
+
+      {step === "contribution" && (
+        <div className="h-screen flex items-center justify-center">
+          <Contribution />
+        </div>
+      )}
+    </>
   );
 }

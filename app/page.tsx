@@ -8,6 +8,8 @@ import { Separator } from "@/components/ui/separator";
 export default function Home() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-between px-6 sm:px-20 py-10 bg-white dark:bg-slate-950 transition-colors duration-300">
+      
+      {/* Header + Main Call-to-Action */}
       <main className="flex flex-col gap-8 items-center sm:items-start text-center sm:text-left max-w-2xl w-full">
         <Image
           className="dark:invert transition-transform duration-200 hover:scale-105"
@@ -27,12 +29,16 @@ export default function Home() {
           Browse, copy, or generate — build your own collection from masterfully crafted prompts.
         </p>
 
-        <Button asChild size="lg" className="shadow-md hover:shadow-lg">
+        <Button
+          asChild
+          size="lg"
+          className="shadow-md hover:shadow-lg text-lg"
+        >
           <Link href="/promptGen/">Enter</Link>
         </Button>
       </main>
 
-      {/* ✨ New Quote + Humor Section */}
+      {/* ✨ Quote + Description */}
       <section className="max-w-2xl mt-16 text-center flex flex-col gap-6">
         <blockquote className="text-xl italic font-medium text-gray-700 dark:text-gray-300">
           "Give a human a prompt, they’ll make an image. Give them a museum of
@@ -47,8 +53,10 @@ export default function Home() {
         </p>
       </section>
 
+      {/* Divider */}
       <Separator className="my-10 w-full max-w-2xl" />
 
+      {/* Footer */}
       <footer className="flex gap-4 flex-wrap items-center justify-center text-sm text-muted-foreground">
         <a
           className="flex items-center gap-2 hover:underline hover:text-primary"
