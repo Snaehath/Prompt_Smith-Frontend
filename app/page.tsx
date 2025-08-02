@@ -23,30 +23,27 @@ export default function Home() {
         </h1>
 
         <p className="text-lg text-muted-foreground">
-          Create powerful, structured prompts for writing, code, image
-          generation, and more — instantly.
+          A curated museum of world‑class prompts that produce art‑like, gallery‑worthy images.
+          Browse, copy, or generate — build your own collection from masterfully crafted prompts.
         </p>
 
         <Button asChild size="lg" className="shadow-md hover:shadow-lg">
-          <Link href="/promptGen/">🚀 Generate Your First Prompt</Link>
+          <Link href="/promptGen/">Enter</Link>
         </Button>
       </main>
 
       {/* ✨ New Quote + Humor Section */}
       <section className="max-w-2xl mt-16 text-center flex flex-col gap-6">
         <blockquote className="text-xl italic font-medium text-gray-700 dark:text-gray-300">
-          "Give a human a keyboard, they'll write a prompt. Give them
-          PromptSmith, they'll write a masterpiece… or at least avoid asking
-          ChatGPT generate a image of apple."
+          "Give a human a prompt, they’ll make an image. Give them a museum of
+          prompts, they’ll curate a masterpiece."
         </blockquote>
 
         <p className="text-base text-muted-foreground leading-relaxed">
-          PromptSmith takes the pain out of prompt writing. No more guessing
-          what to type — we help you sound smart, creative, and occasionally
-          like you've read a book or two. Whether you're crafting epic fantasy
-          sagas or trying to get an AI to generate a photo of a frog riding a
-          skateboard through space, we've got you covered. Stories or visuals —
-          your imagination, supercharged.
+          This museum showcases prompts engineered for craft, control, and beauty—ready to
+          hang on a wall. Explore themed rooms, discover styles from classical oil to
+          avant‑garde surrealism, and copy any prompt to create your own exhibition‑grade work.
+          Prefer instant results? Click generate and watch the gallery come to life.
         </p>
       </section>
 
