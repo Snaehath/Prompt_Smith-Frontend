@@ -9,9 +9,9 @@ import {
 import { Button } from "@/components/ui/button";
 
 const prompts = [
-  "Describe a sunset over a quiet lake.",
-  "Write a poem about lost time.",
-  "Imagine a world where dreams shape reality.",
+  "Write a poem on life.(around 100 words)",
+  "Write a poem about lost time.(5-10 lines)",
+  "Write a poem about love.(5 lines)",
 ];
 
 const handlePoemGeneration = async (prompt: string) => {

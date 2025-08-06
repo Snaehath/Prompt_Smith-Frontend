@@ -13,12 +13,22 @@ import { Button } from "@/components/ui/button";
 
 interface ArtworkProps {
   artwork: Artwork;
+  errorOccurred: boolean;
+  handleManualPrompt: (prompt: string) => void;
   handleImageGeneration: (prompt: string) => Promise<void>;
+  handlebackground: (id: number) => void;
 }
 
-const ArtCard: React.FC<ArtworkProps> = ({ artwork, handleImageGeneration }) => {
+const ArtCard: React.FC<ArtworkProps> = ({
+  artwork,
+  errorOccurred,
+  handleImageGeneration,
+  handleManualPrompt,
+  handlebackground,
+}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [manualPrompt, setManualPrompt] = useState("");
 
   const handleCopyPrompt = () => {
     navigator.clipboard.writeText(artwork.prompt);
@@ -33,7 +43,7 @@ const ArtCard: React.FC<ArtworkProps> = ({ artwork, handleImageGeneration }) => 
   };
 
   if (!artwork) {
-    return (
+    return !errorOccurred ? (
       <Card className="w-[600px] h-[500px] flex items-center justify-center">
         <CardContent>
           <p className="text-gray-400 text-sm animate-pulse">
@@ -41,12 +51,31 @@ const ArtCard: React.FC<ArtworkProps> = ({ artwork, handleImageGeneration }) => 
           </p>
         </CardContent>
       </Card>
+    ) : (
+      <div className="absolute inset-0 flex flex-col items-center justify-center z-10 p-6">
+        <textarea
+          value={manualPrompt}
+          onChange={(e) => setManualPrompt(e.target.value)}
+          placeholder="Enter your own red and black wallpaper pattern prompt..."
+          className="w-full max-w-md h-32 p-4 text-sm rounded text-black border border-gray-300"
+        />
+        <Button
+          className="mt-4"
+          onClick={() => {
+            const trimmed = manualPrompt.trim();
+            if (!trimmed) return;
+            handleManualPrompt(trimmed);
+          }}
+        >
+          Accept Prompt
+        </Button>
+      </div>
     );
   }
 
   return (
     <Card className="w-[600px] h-[500px] flex flex-col overflow-hidden transition-shadow hover:shadow-gray-600/20 border-gray-500/30 border-4">
-      <div className="flex-1 bg-black relative flex items-center justify-center p-3 h-[300px]">
+      <div className="flex-1 bg-black relative flex items-center justify-center h-[300px] overflow-y-auto">
         {isLoading && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-900/80 z-10">
             <div className="h-10 w-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-2" />
@@ -102,6 +131,18 @@ const ArtCard: React.FC<ArtworkProps> = ({ artwork, handleImageGeneration }) => 
         >
           {copied ? <Check size={16} /> : <Copy size={16} />}
           <span className="ml-2">{copied ? "Copied!" : "Copy"}</span>
+        </Button>
+        <Button
+          variant="ghost"
+          onClick={() => handlebackground(artwork.id)}
+          className="absolute top-2 right-2 text-xl"
+        >
+          USE
+        </Button>
+        <Button variant="ghost" className="border-gray-500/30 border-2">
+          <a href={artwork.imageUrl} download={`artwork-${artwork.id}.png`}>
+            DOWNLOAD
+          </a>
         </Button>
       </CardFooter>
     </Card>

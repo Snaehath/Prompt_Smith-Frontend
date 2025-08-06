@@ -12,20 +12,37 @@ import PromptStudio from "./promptStudio";
 interface promptBuilderProps {
   step: Step;
 }
-const toArtwork = (p: string, id: number): Artwork => ({
-  id,
-  title: p.slice(0, 3),
-  artist: "Gemini",
-  year: new Date().getFullYear().toString(),
-  description: "Random two-line cinematic prompt",
-  style: "Two-Line Cinematic",
-  prompt: p,
-  imageUrl: "",
-});
+const toArtwork = (p: Artwork | string, id: number): Artwork => {
+   if (typeof p === "string") {
+    return {
+      id,
+      title: p.slice(0, 10) + "...",
+      artist: "Manual Entry",
+      description: "User-generated prompt",
+      style: "Freeform",
+      prompt: p,
+      year: new Date().getFullYear().toString(),
+      imageUrl: "",
+    };
+  }
+
+  return {
+    id,
+    title: p.title,
+    artist: p.artist,
+    description: p.description,
+    prompt: p.prompt,
+    style: p.style,
+    year: p.year,
+    imageUrl: "",
+  };
+}
 
 export default function PromptBuilder({ step }: promptBuilderProps) {
   const [prompts, setPrompts] = useState<Artwork[]>([]);
+  const [bgImage, setBgImage] = useState<string>("");
 
+  const[promptError, setPromptError] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
   const [loadingText, setLoadingText] = useState("Loading...");
 
@@ -37,6 +54,10 @@ export default function PromptBuilder({ step }: promptBuilderProps) {
     // setStep("suggestion");
   };
 
+  const handleManualPrompt = (prompt: string) => {
+    setPrompts((prev) => [...prev, toArtwork(prompt, prev.length + 1)]);
+  };
+
   const handlePromptGeneration = async () => {
     try {
       const res = await fetch("http://localhost:5000/api/generate-prompt");
@@ -45,22 +66,24 @@ export default function PromptBuilder({ step }: promptBuilderProps) {
 
       if (!res.ok || !data.prompt) {
         console.error("Error:", data.error || "Failed to generate prompt");
+        setPromptError(true);
         return;
       }
 
       setPrompts((prev) => {
         const nextId = prev.length + 1;
-        return [...prev, toArtwork(data.prompt, nextId)];
+        return [...prev, toArtwork(data, nextId)];
       });
     } catch (err) {
       console.error("Network error:", err);
+      setPromptError(true);
     }
   };
   useEffect(() => {
     if (itDidnt.current) return;
     itDidnt.current = true;
     const generateAll = async () => {
-      for (let i = 0; i < 6; i++) {
+      for (let i = 0; i < 3; i++) {
         await handlePromptGeneration();
         await sleep(3000);
       }
@@ -101,8 +124,13 @@ export default function PromptBuilder({ step }: promptBuilderProps) {
       setIsLoading(false);
     }
   };
-  const bgImage = [...prompts].reverse().find((p) => p.imageUrl)?.imageUrl;
 
+  const handleBackgroundImage = (id: number) => {
+    const selectedPrompt = prompts.find((p) => p.id === id);
+    if (selectedPrompt) {
+      setBgImage(selectedPrompt?.imageUrl ?? "");
+    }
+  };
   return (
     <>
       <Loader loading={isLoading} text={loadingText} />
@@ -118,7 +146,10 @@ export default function PromptBuilder({ step }: promptBuilderProps) {
         >
           <MuseumShow
             artPrompts={prompts}
+            errorOccurred={promptError}
+            handleManualPrompt={handleManualPrompt}
             handleImageGeneration={handleImageGeneration}
+            handlebackground={handleBackgroundImage}
           />
         </div>
       )}
