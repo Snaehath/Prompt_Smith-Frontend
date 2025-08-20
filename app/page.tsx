@@ -1,79 +1,54 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
+import { useState } from "react";
+import { Navigation } from "@/components/navigation";
+import { HomePage } from "@/components/home-page";
+import WallpaperGenerator from "@/components/wallpaper";
+import PromptStudio from "@/components/promptStudio";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
+import { Eye, EyeClosed } from "lucide-react";
+
 
 export default function Home() {
+  const [activeTab, setActiveTab] = useState<"home" | "generator" | "studio">(
+    "home"
+  );
+  const [bgImage, setBgImage] = useState<string>("");
+  const [hide, setHide] = useState(false);
+
+  const handleBackgroundImage = (imageUrl: string) => {
+    setBgImage(imageUrl ?? "");
+  };
   return (
-    <div className="min-h-screen flex flex-col items-center justify-between px-6 sm:px-20 py-10 bg-white dark:bg-slate-950 transition-colors duration-300">
-      
-      {/* Header + Main Call-to-Action */}
-      <main className="flex flex-col gap-8 items-center sm:items-start text-center sm:text-left max-w-2xl w-full">
-        <Image
-          className="dark:invert transition-transform duration-200 hover:scale-105"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
+    <div
+      className="min-h-screen"
+      style={{
+        backgroundImage: bgImage ? `url(${bgImage})` : undefined,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
 
-        <h1 className="text-4xl sm:text-5xl font-bold text-black dark:text-white">
-          Welcome to <span className="text-primary">PromptSmith</span>
-        </h1>
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {activeTab === "home" && <HomePage onNavigate={setActiveTab} />}
 
-        <p className="text-lg text-muted-foreground">
-          A curated museum of world‑class prompts that produce art‑like, gallery‑worthy images.
-          Browse, copy, or generate — build your own collection from masterfully crafted prompts.
-        </p>
+        {activeTab === "generator" && (
+          <div className="space-y-8">
+            <div className="text-center">
+              <h1 className="font-serif text-2xl md:text-4xl font-bold text-slate-900">
+                Wallpaper Generator{" "}<Button variant="ghost" onClick={() => setHide(!hide)}>
+                {hide ? <EyeClosed /> : <Eye />}
+              </Button>
+              </h1>
+            </div>
 
-        <Button
-          asChild
-          size="lg"
-          className="shadow-md hover:shadow-lg text-lg"
-        >
-          <Link href="/promptGen/">Enter</Link>
-        </Button>
+            <WallpaperGenerator handleBackgroundImage={handleBackgroundImage} hide={hide} />
+          </div>
+        )}
+
+        {activeTab === "studio" && <PromptStudio />}
       </main>
-
-      {/* ✨ Quote + Description */}
-      <section className="max-w-2xl mt-16 text-center flex flex-col gap-6">
-        <blockquote className="text-xl italic font-medium text-gray-700 dark:text-gray-300">
-          "Give a human a prompt, they’ll make an image. Give them a museum of
-          prompts, they’ll curate a masterpiece."
-        </blockquote>
-
-        <p className="text-base text-muted-foreground leading-relaxed">
-          This museum showcases prompts engineered for craft, control, and beauty—ready to
-          hang on a wall. Explore themed rooms, discover styles from classical oil to
-          avant‑garde surrealism, and copy any prompt to create your own exhibition‑grade work.
-          Prefer instant results? Click generate and watch the gallery come to life.
-        </p>
-      </section>
-
-      {/* Divider */}
-      <Separator className="my-10 w-full max-w-2xl" />
-
-      {/* Footer */}
-      <footer className="flex gap-4 flex-wrap items-center justify-center text-sm text-muted-foreground">
-        <a
-          className="flex items-center gap-2 hover:underline hover:text-primary"
-          href="https://nextjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-            className="dark:invert"
-          />
-          Built with Next.js
-        </a>
-      </footer>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-export interface Artwork {
+export interface PromptWork {
   id: number;
   title: string;
   artist: string;

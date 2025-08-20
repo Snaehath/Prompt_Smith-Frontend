@@ -30,7 +30,7 @@ const PromptStudio: React.FC = () => {
   };
 
   return (
-    <div className="bg-white p-8 min-h-screen">
+    <div className=" min-h-screen">
       <section className="mb-10">
         <h2 className="text-2xl font-bold mb-6">Image Generation Prompt</h2>
         {promptExamples.map((example) => (
@@ -46,31 +46,32 @@ const PromptStudio: React.FC = () => {
               </p>
               <p className="mb-2">
                 <strong>Prompt:</strong> {example.prompt}
-             {!imageMap[example.prompt] && <button
-                onClick={() => handleImageGeneration(example.prompt)}
-                className="text-blue-600 hover:underline mb-2"
-              >
-                Generate Image
-              </button>}
+                {!imageMap[example.prompt] && (
+                  <button
+                    onClick={() => handleImageGeneration(example.prompt)}
+                    className="text-blue-600 hover:underline mb-2"
+                  >
+                    Generate Image
+                  </button>
+                )}
               </p>
-
 
               <ul className="list-disc list-inside space-y-1">
                 {example.breakdown.map((item, idx) => (
                   <li key={idx}>{item}</li>
                 ))}
               </ul>
-                {imageMap[example.prompt] && (
-                  <div className="flex justify-end">
-                    <Image
-                      src={imageMap[example.prompt]}
-                      alt={`Generated for level ${example.level}`}
-                      width={512}
-                      height={512}
-                      className="rounded border"
-                    />
-                  </div>
-                )}
+              {imageMap[example.prompt] && (
+                <div className="flex justify-end">
+                  <Image
+                    src={imageMap[example.prompt]}
+                    alt={`Generated for level ${example.level}`}
+                    width={512}
+                    height={512}
+                    className="rounded border"
+                  />
+                </div>
+              )}
             </CardContent>
           </Card>
         ))}

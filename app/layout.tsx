@@ -1,20 +1,24 @@
+import type React from "react";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Space_Grotesk, DM_Sans } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
+  display: "swap",
+  variable: "--font-space-grotesk",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const dmSans = DM_Sans({
   subsets: ["latin"],
+  display: "swap",
+  variable: "--font-dm-sans",
 });
 
 export const metadata: Metadata = {
-  title: "Create Prompts",
-  description: "Build using Next.js",
+  title: "PromptGen - AI Wallpaper Generator",
+  description:
+    "Generate stunning wallpapers with AI and learn advanced prompting techniques",
 };
 
 export default function RootLayout({
@@ -23,10 +27,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+    <html
+      lang="en"
+      className={`${spaceGrotesk.variable} ${dmSans.variable} antialiased`}
+    >
+      <body className="font-sans bg-gradient-to-br from-slate-50 to-slate-100 min-h-screen">
         {children}
       </body>
     </html>
